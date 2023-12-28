@@ -1,4 +1,4 @@
-![Logo Hodoor](README.md/assets/Hodoor_logo.png)
+![Logo Hodoor](./assets/Hodoor_logo.png)
 
 
 # Hodoor: Facial Recognition System
