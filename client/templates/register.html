@@ -1,0 +1,56 @@
+<!-- ./templates/register.html -->
+{% extends 'base.html' %}
+
+{% block title %}Register Page{% endblock %}
+
+{% block content %}
+    <h2>Register</h2>
+    <div>
+        <video id="videoFeed" width="640" height="480" autoplay></video>
+        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+    </div>
+    <form method="post" id="registerForm">
+        <input type="hidden" name="image_data1" id="imageData1">
+        <input type="hidden" name="image_data2" id="imageData2">
+        <input type="hidden" name="image_data3" id="imageData3">
+        <button type="button" id="faceRegisterButton">Face Register</button>
+    </form>
+
+    <script>
+        const video = document.getElementById('videoFeed');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const faceRegisterButton = document.getElementById('faceRegisterButton');
+
+        faceRegisterButton.addEventListener('click', function() {
+            captureAndSubmit();
+        });
+
+        function captureAndSubmit() {
+            let count = 3;
+            const intervalId = setInterval(() => {
+                if (count > 0) {
+                    console.log(`Capturing photo in ${count}`);
+                    count--;
+                } else {
+                    clearInterval(intervalId);
+                    captureImage(1);
+                    setTimeout(() => captureImage(2), 1000);
+                    setTimeout(() => captureImage(3), 2000);
+                    setTimeout(() => document.getElementById('registerForm').submit(), 3000);
+                }
+            }, 1000);
+        }
+
+        function captureImage(num) {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+            document.getElementById(`imageData${num}`).value = imageData;
+        }
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => { video.srcObject = stream; })
+            .catch(err => { console.error("Error accessing media devices.", err); });
+    </script>
+{% endblock %}
+

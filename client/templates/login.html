@@ -1,0 +1,48 @@
+<!-- ./templates/login.html -->
+<!-- ./templates/login.html -->
+{% extends 'base.html' %}
+
+{% block title %}Login Page{% endblock %}
+
+{% block content %}
+    <h2>Login</h2>
+    {% if error_message %}
+        <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
+    <div>
+        <video id="videoFeed" width="640" height="480" autoplay></video>
+        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+    </div>
+    <form method="post" id="loginForm">
+        <input type="hidden" name="image_data" id="imageData">
+        <button type="button" id="faceLoginButton">Face Login</button>
+    </form>
+
+    <script>
+        const video = document.getElementById('videoFeed');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const imageDataInput = document.getElementById('imageData');
+        const faceLoginButton = document.getElementById('faceLoginButton');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing media devices.", err);
+            });
+
+        faceLoginButton.addEventListener('click', function() {
+            captureAndSubmit();
+        });
+
+        function captureAndSubmit() {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+            imageDataInput.value = imageData;
+
+            document.getElementById('loginForm').submit();
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Dashboard</h1>
+
+    <!-- Boutons d'action transformés en formulaires -->
+    <div class="actions mt-4">
+        <h2>Actions</h2>
+
+        <!-- Formulaire pour la reconnaissance faciale -->
+        <form action="{{ url_for('recognize_face') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button type="submit" class="btn btn-secondary">Reconnaissance Faciale</button>
+        </form>
+
+        <!-- Formulaire pour trouver un visage -->
+        <form action="{{ url_for('find_face') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button type="submit" class="btn btn-secondary">Trouver Visage</button>
+        </form>
+
+        <!-- Formulaire pour la vérification d'identité -->
+        <form action="{{ url_for('verify_identity') }}" method="post" enctype="multipart/form-data">
+            <input type="text" name="user_id" required placeholder="User ID">
+            <input type="file" name="file" required>
+            <button type="submit" class="btn btn-secondary">Vérifier Identité</button>
+        </form>
+
+        <!-- Formulaire pour la détection d'âge -->
+        <form action="{{ url_for('detect_age') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button type="submit" class="btn btn-secondary">Détecter Âge</button>
+        </form>
+
+        <!-- Formulaire pour la détection de genre -->
+        <form action="{{ url_for('detect_gender') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button type="submit" class="btn btn-secondary">Détecter Genre</button>
+        </form>
+
+        <!-- Formulaire pour l'analyse de race -->
+        <form action="{{ url_for('analyze_race') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button type="submit" class="btn btn-secondary">Analyse de Race</button>
+        </form>
+    </div>
+{% endblock %}

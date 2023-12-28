@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+    <h2>Bienvenue, utilisateur {{ user_uuid }}</h2>
+    <p>Redirection vers le tableau de bord dans quelques secondes...</p>
+
+    <script>
+        setTimeout(function() {
+            window.location.href = "{{ url_for('dashboard') }}";
+        }, 5000); // Redirige après 5 secondes
+    </script>
+{% endblock %}

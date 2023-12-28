@@ -1,0 +1,6 @@
+fastapi
+Pillow
+uvicorn
+deepface
+python-multipart
+python-jose[cryptography]

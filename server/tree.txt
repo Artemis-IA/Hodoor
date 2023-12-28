@@ -1,0 +1,11 @@
+.
+├── docker-compose.yml
+├── init-mongo.js
+├── main.py
+├── __pycache__
+│   └── main.cpython-311.pyc
+├── requirements.txt
+├── routes.py
+└── tree.txt
+
+2 directories, 7 files
