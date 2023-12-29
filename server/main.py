@@ -1,20 +1,21 @@
 # ./server/main.py
-from fastapi import FastAPI, File, UploadFile, HTTPException, Depends, status
-from fastapi.security import OAuth2PasswordBearer
-from typing import List
-from jose import JWTError, jwt
 from datetime import datetime, timedelta
-import uuid
-from pymongo import MongoClient
-from bson import ObjectId
-import numpy as np
-from deepface.basemodels import Facenet
-from mtcnn import MTCNN
-from PIL import Image, ImageEnhance
 from io import BytesIO
 import logging
 import shutil
+import uuid
+from bson import ObjectId
+from deepface.basemodels import Facenet
+from faker import Faker
+from fastapi import FastAPI, File, UploadFile, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from mtcnn import MTCNN
+import numpy as np
+from PIL import Image, ImageEnhance
+from pymongo import MongoClient
 import base64
+from typing import List
 
 
 app = FastAPI()
@@ -80,8 +81,6 @@ def get_face_embedding(image):
         logging.error(f"Error in embedding generation: {e}")
         return None
 
-from fastapi import HTTPException, status
-from jose import JWTError, jwt
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
@@ -138,6 +137,10 @@ async def register(files: List[UploadFile] = File(...)):
     if len(files) != 3:
         return {"message": "Exactly 3 images are required"}, 400
 
+    # Générer un nom d'utilisateur aléatoire
+    fake = Faker()
+    username = fake.first_name()
+
     # Process images and generate embeddings
     embeddings = []
     for file in files:
@@ -148,15 +151,16 @@ async def register(files: List[UploadFile] = File(...)):
         embeddings.append(embedding)
 
     # Save one of the images as profile picture
-    profile_image_path = save_image(files[0])  # Example: saving the first image
+    profile_image_path = save_image(files[0])
 
     # Create new user with UUID, embeddings, and profile image path
     user_uuid = str(uuid.uuid4())
     new_user = {
         "uuid": user_uuid,
+        "username": username,  # Utiliser le nom d'utilisateur généré
         "embeddings": [embedding.tolist() for embedding in embeddings],
         "registered_at": datetime.utcnow(),
-        "profile_image": profile_image_path  # Include profile image path
+        "profile_image": profile_image_path
     }
     users.insert_one(new_user)
     logging.info(f"User {user_uuid} registered successfully")
@@ -164,8 +168,9 @@ async def register(files: List[UploadFile] = File(...)):
     return {
         "message": "User registered successfully",
         "uuid": user_uuid,
-        "profile_image": profile_image_path  # Return profile image path
+        "profile_image": profile_image_path
     }
+
 
 
 @app.get("/users")

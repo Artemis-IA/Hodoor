@@ -11,6 +11,7 @@ app = Flask(__name__)
 
 SERVEUR_URL = "http://127.0.0.1:8000"
 SECRET_KEY = "your_secret_key"
+ALGORITHM = "HS256"
 app.secret_key = SECRET_KEY
 
 
@@ -30,7 +31,7 @@ def is_logged_in():
     token = session.get("jwt_token")
     if token:
         try:
-            jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             return True
         except jwt.ExpiredSignatureError:
             session.pop("jwt_token", None)
@@ -79,8 +80,8 @@ def login():
             if "access_token" in response_json:
                 session["jwt_token"] = response_json["access_token"]
                 session["is_logged_in"] = True
-                user_uuid = response_json.get("user_id", "Unknown User ID")
-                return render_template("welcome.html", user_uuid=user_uuid)
+                user_username = response_json.get("username", "Utilisateur")
+                return render_template("welcome.html", user_username=user_username)
             else:
                 error_message = "Erreur de réponse du serveur"
         elif response.status_code == 500:
@@ -101,8 +102,8 @@ def register():
 
         if response.status_code == 200:
             response_data = response.json()
-            user_uuid = response_data.get("uuid")
-            return render_template("welcome.html", user_uuid=user_uuid)
+            user_username = response_data.get("username")
+            return render_template("welcome.html", user_username=user_username)
         else:
             return (
                 f"Échec de l'enregistrement: {response.status_code}",
@@ -135,6 +136,13 @@ def get_users():
 
     if response.status_code == 200:
         users_list = response.json()
+
+        # Traitement des données pour chaque utilisateur
+        for user in users_list:
+            # Conversion des embeddings en chaînes de caractères
+            if 'embeddings' in user:
+                user['embeddings'] = ['; '.join(map(str, embedding)) for embedding in user['embeddings']]
+
         return render_template("users.html", users=users_list)
     else:
         # Gestion des erreurs (par exemple, redirection en cas d'échec d'authentification)

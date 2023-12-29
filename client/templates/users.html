@@ -30,9 +30,9 @@ Utilisateurs enregistrés
                     <td>{{ user.uuid }}</td>
                     <td>{{ user.username }}</td>
                     {% if user.embeddings %}
-                        <td>{{ user.embeddings[0] }}</td>
-                        <td>{{ user.embeddings[1] }}</td>
-                        <td>{{ user.embeddings[2] }}</td>
+                        <td>{{ user.embeddings[0] | safe }}</td>
+                        <td>{{ user.embeddings[1] | safe }}</td>
+                        <td>{{ user.embeddings[2] | safe }}</td>
                     {% else %}
                         <td colspan="3">Aucun embedding disponible</td>
                     {% endif %}
