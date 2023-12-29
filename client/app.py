@@ -1,11 +1,9 @@
 # ./client/app.py
-import imp
 from flask import Flask, render_template, request, redirect, url_for, Response, session
 import requests
 import cv2
 import base64
 import io
-import base64
 import jwt
 
 
