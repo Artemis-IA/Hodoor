@@ -1,10 +1,8 @@
 # ./server/main.py
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import FastAPI, File, UploadFile, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordBearer
 from typing import List
-from jose import jwt
+from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import uuid
 from pymongo import MongoClient
@@ -31,12 +29,13 @@ users = db['users']
 facenet_model = Facenet.loadModel()
 mtcnn_detector = MTCNN()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 logging.basicConfig(level=logging.INFO)
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
-    to_encode.update({"exp": expire})
+    to_encode.update({"exp": expire, "roles": ["admin", "user"]})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
@@ -81,6 +80,29 @@ def get_face_embedding(image):
         logging.error(f"Error in embedding generation: {e}")
         return None
 
+from fastapi import HTTPException, status
+from jose import JWTError, jwt
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub", "")  # Provide a default value of an empty string
+        if username == "":
+            raise credentials_exception
+        roles: list = payload.get("roles", [])
+        if "admin" not in roles:  # Vérifier si l'utilisateur a le rôle 'admin'
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Insufficient permissions",
+            )
+        return username
+    except JWTError:
+        raise credentials_exception
+
+credentials_exception = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Could not validate credentials",
+)
 
 @app.post("/login")
 async def login(file: UploadFile = File(...)):

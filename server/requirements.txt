@@ -4,3 +4,4 @@ uvicorn
 deepface
 python-multipart
 python-jose[cryptography]
+PyJWT

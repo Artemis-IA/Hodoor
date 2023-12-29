@@ -13,23 +13,22 @@ Utilisateurs enregistrés
                 <th>Photo de profil</th>
                 <th>UUID</th>
                 <th>Username</th>
-                <th>Password</th>
                 <th>Embedding 1</th>
                 <th>Embedding 2</th>
                 <th>Embedding 3</th>
+                <th>Date d'enregistrement</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
                 <tr>
-                {% if user.profile_image_base64 %}
-                    <td><img src="data:image/jpeg;base64,{{ user.profile_image_base64 }}" alt="Profile Image" /></td>
-                {% else %}
-                    <td>Pas d'image disponible</td>
-                {% endif %}
+                    {% if user.profile_image_base64 %}
+                        <td><img src="data:image/jpeg;base64,{{ user.profile_image_base64 }}" alt="Profile Image" /></td>
+                    {% else %}
+                        <td>Pas d'image disponible</td>
+                    {% endif %}
                     <td>{{ user.uuid }}</td>
                     <td>{{ user.username }}</td>
-                    <td>{{ user.password }}</td>
                     {% if user.embeddings %}
                         <td>{{ user.embeddings[0] }}</td>
                         <td>{{ user.embeddings[1] }}</td>
@@ -37,6 +36,7 @@ Utilisateurs enregistrés
                     {% else %}
                         <td colspan="3">Aucun embedding disponible</td>
                     {% endif %}
+                    <td>{{ user.registered_at }}</td>
                 </tr>
             {% endfor %}
         </tbody>
