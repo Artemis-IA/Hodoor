@@ -1,16 +1,7 @@
 ![Logo Hodoor](./assets/Hodoor_logo.png)
 
 
-# Hodoor: Facial Recognition System
-
-## Introduction
-Hodoor is an advanced facial recognition system inspired by the iconic character Hodor from "Game of Thrones". The system utilizes state-of-the-art technology for accurate and secure face recognition, suitable for various applications including security, authentication, and surveillance.
-
-## Features
-- **Facial Recognition:** Leverages deep learning algorithms for accurate face detection and recognition.
-- **User Authentication:** Enhances security by using facial data for user authentication.
-- **Surveillance:** Capable of monitoring and identifying individuals in real-time for security purposes.
-- **User-Friendly Interface:** Simple and intuitive interface for easy operation and management.
+# Hodoor: Facial Login System
 
 ## System Architecture
 Hodoor's architecture is split into two main components: the Server (Backend) and the Client (Frontend).
@@ -75,5 +66,4 @@ Detailed steps to use the Hodoor system.
 ### User's dashboard
 1. Navigate to the dashboard page.
 2. The user's information will be displayed along with the user's facial embeddings.
-
 
